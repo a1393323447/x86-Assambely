@@ -61,7 +61,7 @@ main:
     call PrintString
     jmp End
 
-ReadHDD:
+ReadHDD:        ; 参数: al: 读取扇区数, si: 逻辑号低16位, cx: 逻辑号高12位
     .setup:
         push ax ; 保存现场
         push bx
@@ -100,14 +100,14 @@ ReadHDD:
     .waits:
         in al, dx           ; 读取 0x1f7 端口, 得到硬盘的状态字节
         and al, 0x88        ; 0x88 -> 1000 1000 除了 3、7位的其它位置为 0
-        cmp al, 0x08        ; 0x08 -> 0000 1000 当第 7 位为 0 , 第 3 位为 1 时, 就可以读盘了
-        jnz .waits          ; 不等的话就继续等待
+        cmp al, 0x08        ; 0x08 -> 0000 1000 当第 7 位为 0 , 第 3 位为 1 时, 就可以读盘了 (cmp 会将两个操作数相减)
+        jnz .waits          ; 不等的话就继续等待, jump if zero flag is unset
     
     .readsetup:
         mov dx, HDDPORT     ; 设置读取数据的端口 0x1f0
         mov cx, 256         ; 设置读取次数: 一个扇区 512 个字节, 读 256 次
 
-    .readword:              ; 读数据, 一次读 2 个字节 (端口是 8位 寄存器)
+    .readword:              ; 读数据, 一次读 2 个字节 (0x1f0是16位端口)
         in ax, dx           ; 使用 in 指令, 将数据读取到 ax 寄存器
         mov [ds:di], ax     ; 将数据保存到 ds:di 指向的内存单元
         add di, 2           ; 将偏移地址 +2 (一次写入 2 个字节)
