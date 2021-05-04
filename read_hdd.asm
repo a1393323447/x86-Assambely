@@ -114,9 +114,8 @@ ReadHDD:        ; 参数: al: 读取扇区数
     .readword:              ; 读数据, 一次读 2 个字节 (0x1f0是16位端口)
         in ax, dx           ; 使用 in 指令, 将数据读取到 ax 寄存器
         mov [ds:di], ax     ; 将数据保存到 ds:di 指向的内存单元
-        add di, 2           ; 将偏移地址 +2 (一次写入 2 个字节)
-        or ah, 0x00         ; 数据以 0x00 结尾(自己定义的,详见 data.asm)
-        jnz .readword
+        add di, 2           ; 将偏移地址 +2 (一次写入 2 个字节)         
+        loop .readword      ; 循环 256 次, 读取一个扇区的数据
 
     .return:
         pop dx              ; 还原现场
