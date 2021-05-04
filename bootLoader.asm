@@ -25,7 +25,17 @@ main:
     pop ax              ;                                         |
                         ;                                         |
     call ReadHDD        ; 1. 读取 1 号扇区                         |
-                        ; 2. ... (未实现)                          |
+ReadAll:                ; 2. 读取 Size, 并根据 Size 读取剩下的程序. |
+    mov ax, [0x00]      ; 读取 Size                               |
+    shr ax, 9           ; 右移 9 位 -> 除以 512                    |
+    cmp al, 0x00        ; al: 商                                  |
+    jz  RestSegment     ; al == 0 -> Size <= max(一个扇区)         |
+    mov ah, al          ; 设置 ReadHDD 的参数                      |
+    mov bx, 0x0001      ; 扇区号 + 1                               |
+    add si, bx          ;                                         |
+    mov bx, 0x0000      ;                                         |
+    adc cx, bx          ;                                         |
+    call ReadHDD        ; 读盘                                     |
 RestSegment:            ; 3. 地址重定位                             |
     mov bx, 0x04        ; 将第一个段地址相对于head的偏移地址放入 bx   |        
     mov cl, [0x10]      ; 这时候的偏移是相对于段地址的偏移         <--
