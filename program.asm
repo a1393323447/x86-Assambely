@@ -42,9 +42,10 @@ section head align=16 vstart=0  ; head 中的数据要依靠 数据大小 偏移
 
 section code align=16 vstart=0
     CodeStart:
-        mov ax, [DataSeg]   ; 指向 Hello 字符串
+        mov ax, [DataSeg]   ; 指向重定位后的 Data 段的起始地址
         mov ds, ax
         xor si, si
+        mov si, Ha       ; 指向 Ha 字符串
         call PrintString
         jmp $            ; dead loop
     PrintString:
@@ -80,6 +81,9 @@ section code align=16 vstart=0
 
 section data align=16 vstart=0
     Hello db 'Hello, I come from progam on sector 1, loaded the by bootloader.'
+          db 0x00
+    times 512 db 0  ; 确保 Ha 字符串在第二个扇区
+    Ha    db 'Hello from another sector! WuuHoooo !'
           db 0x00
 
 section stack align=16 vstart=0     ; 程序的栈空间
