@@ -37,8 +37,8 @@ section head align=16 vstart=0  ; head 中的数据要依靠 数据大小 偏移
         StackSeg dd section.stack.start ; 4B 0x0c
     SegmentNum:
         SegNum db (SegmentNum - SegmentAddr)/4 ; 1B 0x10, 段的数量
-        Entry dw CodeStart          ; 2B 0x11 偏移地址
-              dd section.code.start ; 4B 0x13 段地址
+    Entry dw CodeStart          ; 2B 0x11 偏移地址
+            dd section.code.start ; 4B 0x13 段地址
 
 section code align=16 vstart=0
     CodeStart:
