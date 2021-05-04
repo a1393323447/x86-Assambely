@@ -27,7 +27,7 @@ main:
     call ReadHDD        ; 1. 读取 1 号扇区                         |
                         ; 2. ... (未实现)                          |
 RestSegment:            ; 3. 地址重定位                             |
-    mov bx, 0x04        ; 将第一个段地址相对于head的偏移地址放入 bx   |        |
+    mov bx, 0x04        ; 将第一个段地址相对于head的偏移地址放入 bx   |        
     mov cl, [0x10]      ; 这时候的偏移是相对于段地址的偏移         <--
                         ; [0x10] -> SegNum
     .reset:             
