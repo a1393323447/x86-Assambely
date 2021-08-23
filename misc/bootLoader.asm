@@ -30,7 +30,7 @@ ReadAll:                ; 2. 读取 Size, 并根据 Size 读取剩下的程序. 
     shr ax, 9           ; 右移 9 位 -> 除以 512                    |
     cmp al, 0x00        ; al: 商                                  |
     jz  RestSegment     ; al == 0 -> Size <= max(一个扇区)         |
-    mov ah, al          ; 设置 ReadHDD 的参数                      |
+    ; mov ah, al          ; 设置 ReadHDD 的参数                      |
     mov bx, 0x0001      ; 扇区号 + 1                               |
     add si, bx          ;                                         |
     mov bx, 0x0000      ;                                         |
@@ -106,7 +106,10 @@ ReadHDD:                ; 参数: al: 读取扇区数
         jnz .waits          ; jump if zero flag is unset
 
     mov dx, HDDPORT         ; 设置端口号
-    mov cx, 256             ; 设置循环次数, 直接读取一个扇区
+    pop ax
+    mov ah, 256
+    mul ah
+    mov cx, ax             ; 设置循环次数, 直接读取一个扇区
 
     .readword:
         in  ax, dx
